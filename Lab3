@@ -1,0 +1,43 @@
+import argparse
+import pandas as pd
+from sklearn.model_selection import train_test_split
+
+# Function 1: Sequential Split (80% train, 20% test)
+def splitData(df):
+    train_size = int(len(df) * 0.8)
+    train = df[:train_size]
+    test = df[train_size:]
+    return train, test
+
+# Function 2: Random Split (80% train, 20% test)
+def splitDataRandom(df):
+    train, test = train_test_split(df, test_size=0.2, random_state=42)
+    return train, test
+
+# Command-line Argument Handling
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--file", required=True, help="Path to dataset file (CSV)")
+    args = parser.parse_args()
+
+    # Load dataset
+    try:
+        df = pd.read_csv(args.file)
+        print(f"✅ Loaded dataset with {len(df)} rows and {len(df.columns)} columns.")
+    except Exception as e:
+        print(f"❌ Error loading file: {e}")
+        return
+
+    # Perform both types of splits
+    train_seq, test_seq = splitData(df)
+    train_rand, test_rand = splitDataRandom(df)
+
+    # Print summary
+    print("\n=== Sequential Split ===")
+    print(f"Train: {len(train_seq)} rows, Test: {len(test_seq)} rows")
+
+    print("\n=== Random Split ===")
+    print(f"Train: {len(train_rand)} rows, Test: {len(test_rand)} rows")
+
+if __name__ == "__main__":
+    main()
